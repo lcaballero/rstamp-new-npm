@@ -1,0 +1,26 @@
+{
+  "name": "New Npm Package",
+  "version": "0.0.2",
+  "description": "New npm description",
+  "main": "main.js",
+  "scripts": {
+    "test": "run-tests"
+  },
+  "keywords": [
+    "word1",
+    "word2",
+    "word3"
+  ],
+  "license": "EPL",
+  "repository": "github://my-repo",
+  "dependencies": {
+    "coffee-script": "^1.7.1",
+    "inquirer": "^0.5.1",
+    "lodash": "^2.4.1",
+    "rubber-stamp": "0.0.4"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.20.1"
+  }
+}
