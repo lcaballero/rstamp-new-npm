@@ -53,8 +53,8 @@ module.exports = (opts) ->
   gen = Gen.using(source, target, opts, "Generate a rubber-stamp generator")
     .mkdir()
     .add((g) ->
-#      createPackage(g)
-#      installPackages()
+      createPackage(g)
+      installPackages()
       g.in(target)
         .translate('gitignore', '.gitignore')
         .translate('license', 'license')
