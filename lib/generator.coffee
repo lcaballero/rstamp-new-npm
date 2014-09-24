@@ -6,7 +6,7 @@ proc  = require 'child_process'
 spawn = proc.spawn
 
 
-module.exports = (opts) ->
+module.exports = (opts, isTesting) ->
   {source, target} = opts
 
   inputsPackage = (inputs) ->
@@ -54,9 +54,11 @@ module.exports = (opts) ->
     .mkdir()
     .add((g) ->
       createPackage(g)
-      installPackages()
-      g.in(target)
-        .translate('gitignore', '.gitignore')
+
+      if !isTesting
+        installPackages()
+
+      g.translate('gitignore', '.gitignore')
         .translate('license', 'license')
         .translate('travis.yml', '.travis.yml')
         .process('readme.md')

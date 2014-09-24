@@ -26,13 +26,14 @@ describe 'generator =>', ->
         license       : "EPL"
       }
 
-    source = 'files/sources/t1'
-    target = 'files/targets/t1'
-    cmd = null
+    source  = 'files/sources/t1'
+    target  = 'files/targets/t1'
+    cmd     = null
 
     beforeEach ->
-      cmd = { source:source, target:target, inputs: createInputs() }
-      gen(cmd)()
+      inputs  = createInputs()
+      cmd     = _.defaults({}, { source:source, target:target }, inputs)
+      gen(cmd, true)()
 
     it 'should create all dirs/ and files into the target dir/', ->
 
@@ -44,19 +45,17 @@ describe 'generator =>', ->
       json = fs.readFileSync(path.resolve(target, 'package.json'), 'utf8')
       conf = JSON.parse(json)
 
-      inputs = cmd.inputs
+      inputs = cmd
       expect(conf.name, 'missing name').to.equal(inputs.name)
       expect(conf.version, 'missing version').to.equal(inputs.version)
       expect(conf.description, 'missing description').to.equal(inputs.description)
       expect(conf.main, 'missing main').to.equal(inputs.entryPoint)
       expect(conf.scripts.test, 'missing test command').to.equal(inputs.testCommand)
-      expect(conf.dependencies).to.be.ok
-      expect(conf.devDependencies).to.be.ok
 
     it 'should have tokenized keywords', ->
       json = fs.readFileSync(path.resolve(target, 'package.json'), 'utf8')
       conf = JSON.parse(json)
-      inputs = cmd.inputs
+      inputs = cmd
 
       expect(conf.keywords).to.have.length(inputs.keywords.split(" ").length)
 
