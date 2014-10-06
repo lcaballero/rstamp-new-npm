@@ -1,23 +1,24 @@
 {
-    "name": "rstamp-new-npm",
-    "version": "0.0.2",
-    "description": "For use via rstamp-cli.  It generates a new npm project, one that suits my tasts, and has a lot of libraries that I typically use.  The basic structure looks like so:",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha --reporter list --compilers coffee:coffee-script/register tests"
-    },
-    "keywords": [
-    ],
-    "author": "",
-    "license": "Eclipse Public License (EPL)",
-    "dependencies": {
-        "coffee-script": "^1.7.1",
-        "inquirer": "^0.5.1",
-        "lodash": "^2.4.1",
-        "rubber-stamp": "0.0.4"
-    },
-    "devDependencies": {
-        "chai": "^1.9.1",
-        "mocha": "^1.20.1"
-    }
+  "name": "rstamp-new-npm",
+  "version": "0.0.2",
+  "description": "For use via rstamp-cli.  It generates a new npm project, one that suits my tasts, and has a lot of libraries that I typically use.  The basic structure looks like so:",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter list --compilers coffee:coffee-script/register tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Eclipse Public License (EPL)",
+  "dependencies": {
+    "async": "^0.9.0",
+    "cli-color": "^0.3.2",
+    "coffee-script": "^1.7.1",
+    "inquirer": "^0.5.1",
+    "lodash": "^2.4.1",
+    "rubber-stamp": "0.0.4"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.20.1"
+  }
 }

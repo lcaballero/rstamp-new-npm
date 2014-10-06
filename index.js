@@ -1,2 +1,2 @@
 require('coffee-script/register')
-require('./lib/get-inputs')
+module.exports = require('./lib/get-inputs')

@@ -1,12 +1,14 @@
-Gen   = require 'rubber-stamp'
-fs    = require 'fs'
-path  = require 'path'
-_     = require 'lodash'
-proc  = require 'child_process'
-spawn = proc.spawn
+Gen     = require 'rubber-stamp'
+fs      = require 'fs'
+path    = require 'path'
+proc    = require 'child_process'
+spawn   = proc.spawn
+async   = require 'async'
+helpers = require './helpers'
 
 
 module.exports = (opts, isTesting) ->
+  { hyphenatedToSymbol } = helpers
   {source, target} = opts
 
   inputsPackage = (inputs) ->
@@ -14,17 +16,23 @@ module.exports = (opts, isTesting) ->
     version     : inputs.version
     description : inputs.description
     main        : inputs.entryPoint
-    scripts     :
-      test: inputs.testCommand or ""
-    keywords    : (inputs.keywords or "").split(" ")
+    keywords    : do ->
+      keywords = _.compact((inputs.keywords or "").split(" "))
+      if keywords.length > 0
+        keywords
+      else
+        []
     license     : inputs.license or "Eclipse Public License (EPL)"
     repository  : inputs.repo
+    scripts     :
+      test: inputs.testCommand or ""
 
   handleClose = (next) -> (code, signal) ->
     if code isnt 0
       console.log('code', code, 'signal', signal)
+      next(new Error("code: #{code}, signal: #{signal}"))
     else if next? and code is 0
-      next()
+      next(null, code)
 
   createPackage = (g) ->
     model       = g.getModel()
@@ -34,35 +42,66 @@ module.exports = (opts, isTesting) ->
 
   installPackages = () ->
     opts  =
-      cwd : path.resolve(process.cwd(), target)
-      stdio : [process.stdin, process.stdout, process.stderr]
+      cwd   : path.resolve(process.cwd(), target)
+      stdio : [ process.stdin, process.stdout, process.stderr ]
 
-    packages =
-      deps : [ 'install', 'coffee-script', 'lodash', 'nject', 'moment', '--save' ]
-      devs : [ 'install', 'mocha', 'chai', 'sinon', 'sinon-chai', '--save-dev' ]
+    packages = [
+        name: 'npm'
+        args: [ 'install', 'coffee-script', 'lodash', 'nject', 'moment', '--save' ]
+      ,
+        name: 'npm'
+        args: [ 'install', 'mocha', 'chai', 'sinon', 'sinon-chai', '--save-dev' ]
+      ,
+        name: 'git'
+        args: [ 'init' ]
+      ,
+        name: 'chmod',
+        args: [ '+x', 'main.coffee' ]
+      ,
+        name: 'npm'
+        args: [ 'test' ]
+      ]
 
-    deps = spawn("npm", packages.deps, opts)
-    deps.on('exit', handleClose(->
-        devs = spawn('npm', packages.devs, opts)
-        devs.on('exit', handleClose(->
-          git = spawn('git', ['init'], opts))
-        )
-      )
+    handleProc = (e, cb) ->
+      proc = spawn(e.name, e.args, opts)
+      proc.on('exit', handleClose(cb))
+
+    async.mapSeries(packages, handleProc, (err, res) ->
+      if err? then console.log(JSON.stringify(err, null, ' '))
     )
 
-  gen = Gen.using(source, target, opts, "Generate a rubber-stamp generator")
+  opts.symbol = hyphenatedToSymbol(opts.name)
+  console.json(opts)
+
+  gen = Gen.using(source, target, opts, "Generate a new Node npm package.")
     .mkdir()
     .add((g) ->
-      createPackage(g)
 
-      if !isTesting
-        installPackages()
+      console.json('getModel', g.getModel())
+
+      createPackage(g)
 
       g.translate('gitignore', '.gitignore')
         .translate('license', 'license')
         .translate('travis.yml', '.travis.yml')
         .process('readme.md')
         .mkdir('src', 'tests', 'files')
+        .copy('src/globals.coffee')
+        .translate('main.coffee.ftl', "main.coffee")
+        .translate('src/FirstClass.coffee.ftl', "src/#{g.getModel().symbol}.coffee")
+        .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
+        .copy('tests/globals.coffee')
     )
 
-  -> gen.apply()
+  ->
+    nogen = path.resolve(opts.target, ".rstamp.nogen")
+
+    if fs.existsSync(nogen)
+      console.log("#{nogen} file is present in target directory.")
+      console.log("Aborting generation.")
+    else
+      gen.apply()
+
+      if !isTesting
+        installPackages()
+
