@@ -71,13 +71,10 @@ module.exports = (opts, isTesting) ->
     )
 
   opts.symbol = hyphenatedToSymbol(opts.name)
-  console.json(opts)
 
   gen = Gen.using(source, target, opts, "Generate a new Node npm package.")
     .mkdir()
     .add((g) ->
-
-      console.json('getModel', g.getModel())
 
       createPackage(g)
 

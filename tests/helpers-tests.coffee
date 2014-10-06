@@ -1,6 +1,6 @@
 helpers = require('../lib/helpers')
 
-describe.only 'helpers-tests =>', ->
+describe 'helpers-tests =>', ->
 
   { hyphenatedToSymbol } = helpers
 
