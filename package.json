@@ -15,7 +15,7 @@
     "coffee-script": "^1.7.1",
     "inquirer": "^0.5.1",
     "lodash": "^2.4.1",
-    "rubber-stamp": "0.0.4"
+    "rubber-stamp": "0.0.5"
   },
   "devDependencies": {
     "chai": "^1.9.1",

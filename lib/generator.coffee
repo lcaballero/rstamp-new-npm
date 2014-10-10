@@ -40,42 +40,11 @@ module.exports = (opts, isTesting) ->
     json        = JSON.stringify(packageJson, null, '  ')
     fs.writeFileSync(g.to('package.json'), json, 'utf8')
 
-  installPackages = () ->
-    opts  =
-      cwd   : path.resolve(process.cwd(), target)
-      stdio : [ process.stdin, process.stdout, process.stderr ]
-
-    packages = [
-        name: 'npm'
-        args: [ 'install', 'coffee-script', 'lodash', 'nject', 'moment', '--save' ]
-      ,
-        name: 'npm'
-        args: [ 'install', 'mocha', 'chai', 'sinon', 'sinon-chai', '--save-dev' ]
-      ,
-        name: 'git'
-        args: [ 'init' ]
-      ,
-        name: 'chmod',
-        args: [ '+x', 'main.coffee' ]
-      ,
-        name: 'npm'
-        args: [ 'test' ]
-      ]
-
-    handleProc = (e, cb) ->
-      proc = spawn(e.name, e.args, opts)
-      proc.on('exit', handleClose(cb))
-
-    async.mapSeries(packages, handleProc, (err, res) ->
-      if err? then console.log(JSON.stringify(err, null, ' '))
-    )
-
   opts.symbol = hyphenatedToSymbol(opts.name)
 
   gen = Gen.using(source, target, opts, "Generate a new Node npm package.")
     .mkdir()
     .add((g) ->
-
       createPackage(g)
 
       g.translate('gitignore', '.gitignore')
@@ -88,6 +57,29 @@ module.exports = (opts, isTesting) ->
         .translate('src/FirstClass.coffee.ftl', "src/#{g.getModel().symbol}.coffee")
         .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
         .copy('tests/globals.coffee')
+        .run(
+          options:
+            cwd   : path.resolve(process.cwd(), target)
+            stdio : [ process.stdin, process.stdout, process.stderr ]
+          commands :
+            if isTesting then []
+            else [
+              name: 'npm'
+              args: [ 'install', 'coffee-script', 'lodash', 'nject', 'moment', '--save' ]
+            ,
+              name: 'npm'
+              args: [ 'install', 'mocha', 'chai', 'sinon', 'sinon-chai', '--save-dev' ]
+            ,
+              name: 'git'
+              args: [ 'init' ]
+            ,
+              name: 'chmod',
+              args: [ '+x', 'main.coffee' ]
+            ,
+              name: 'npm'
+              args: [ 'test' ]
+            ]
+        )
     )
 
   ->
@@ -98,7 +90,3 @@ module.exports = (opts, isTesting) ->
       console.log("Aborting generation.")
     else
       gen.apply()
-
-      if !isTesting
-        installPackages()
-
