@@ -46,7 +46,7 @@ module.exports = (opts, isTesting) ->
         .translate('travis.yml', '.travis.yml')
         .process('readme.md')
         .mkdirs('src', 'tests', 'files')
-        .translate('index.js.ftl', "index.js")
+        .translate('index.js.ftl', opts.entryPoint)
         .translate('src/FirstClass.coffee.ftl', "src/#{g.getModel().symbol}.coffee")
         .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
         .copy('tests/globals.coffee')
@@ -67,7 +67,7 @@ module.exports = (opts, isTesting) ->
               args: [ 'init' ]
             ,
               name: 'chmod',
-              args: [ '+x', 'main.coffee' ]
+              args: [ '+x', opts.entryPoint ]
             ,
               name: 'npm'
               args: [ 'test' ]
