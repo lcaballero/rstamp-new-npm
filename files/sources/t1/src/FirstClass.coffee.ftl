@@ -2,4 +2,4 @@
 
 module.exports =
   class <%= symbol %>
-    conststructor: ->
+    constructor: ->

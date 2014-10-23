@@ -1,18 +1,13 @@
-chai       = require 'chai'
-{ expect } = chai
-gen        = require '../lib/generator'
-fs         = require 'fs'
-path       = require 'path'
-_          = require 'lodash'
-
+chai            = require 'chai'
+{ expect }      = chai
+gen             = require '../lib/generator'
+fs              = require 'fs'
+path            = require 'path'
+_               = require 'lodash'
+{ run, exists, rm, mkdir } = require './gen-verify-helpers'
 
 
 describe 'generator =>', ->
-
-  exists = (root, dirs...) ->
-    for dir in dirs
-      file = path.resolve(root, dir)
-      expect(fs.existsSync(file), 'should have created file: ' + file).to.be.true
 
   describe 'project generation =>', ->
 
@@ -26,19 +21,38 @@ describe 'generator =>', ->
         repo          : "github://my-repo"
         keywords      : "word1 word2 word3"
         license       : "EPL"
+        username      : "Chester Testerson"
       }
 
     source  = 'files/sources/t1'
     target  = 'files/targets/t1'
     cmd     = null
 
+    beforeEach (done) ->
+      mkdir 'files', 'targets/t1', done
+
     beforeEach ->
       inputs  = createInputs()
       cmd     = _.defaults({}, { source:source, target:target }, inputs)
       gen(cmd, true)()
 
-    it 'should create all dirs/ and files into the target dir/', ->
+    afterEach (done) ->
+      rm 'files/targets', 't1', done
 
+    it 'should have generated base the files and directories', ->
+      exists(target,
+        'files'
+        'src'
+        'tests'
+        '.gitignore'
+        '.travis.yml'
+        'index.js'
+        'license'
+        'package.json'
+        'readme.md'
+      )
+
+    it 'should create all dirs/ and files into the target dir/', ->
       base = target
       exists(base, 'package.json')
 

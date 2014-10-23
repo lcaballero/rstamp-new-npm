@@ -17,8 +17,7 @@ cls   = require 'cli-color'
   Is This OK? (yes)       : (aborts if not yes)
 ###
 questions = (conf) ->
-  dirName = path.basename(process.cwd())
-
+  dirName  = path.basename(process.cwd())
   [
     {
       name    : "target"
@@ -110,9 +109,11 @@ colors =
   header    : cls.underline
   template  : cls.xterm(245)
 
+
 padRight = (s, n) ->
   delta = Math.max(n - s.length, 0)
   s + (new Array(delta).join(' '))
+
 
 showValues = (answers) ->
   keySize = _.reduce(_.keys(answers), (acc, f) ->

@@ -9,12 +9,13 @@ helpers = require './helpers'
 
 module.exports = (opts, isTesting) ->
   { hyphenatedToSymbol } = helpers
-  {source, target} = opts
+  { source, target } = opts
 
   inputsPackage = (inputs) ->
     name        : inputs.name
     version     : inputs.version
     description : inputs.description
+    author      : inputs.author
     main        : inputs.entryPoint
     keywords    : do ->
       keywords = _.compact((inputs.keywords or "").split(" "))
@@ -26,13 +27,6 @@ module.exports = (opts, isTesting) ->
     repository  : inputs.repo
     scripts     :
       test: inputs.testCommand or ""
-
-  handleClose = (next) -> (code, signal) ->
-    if code isnt 0
-      console.log('code', code, 'signal', signal)
-      next(new Error("code: #{code}, signal: #{signal}"))
-    else if next? and code is 0
-      next(null, code)
 
   createPackage = (g) ->
     model       = g.getModel()
@@ -51,9 +45,8 @@ module.exports = (opts, isTesting) ->
         .translate('license', 'license')
         .translate('travis.yml', '.travis.yml')
         .process('readme.md')
-        .mkdir('src', 'tests', 'files')
-        .copy('src/globals.coffee')
-        .translate('main.coffee.ftl', "main.coffee")
+        .mkdirs('src', 'tests', 'files')
+        .translate('index.js.ftl', "index.js")
         .translate('src/FirstClass.coffee.ftl', "src/#{g.getModel().symbol}.coffee")
         .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
         .copy('tests/globals.coffee')
