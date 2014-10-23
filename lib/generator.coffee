@@ -51,9 +51,6 @@ module.exports = (opts, isTesting) ->
         .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
         .copy('tests/globals.coffee')
         .run(
-          options:
-            cwd   : path.resolve(process.cwd(), target)
-            stdio : [ process.stdin, process.stdout, process.stderr ]
           commands :
             if isTesting then []
             else [
