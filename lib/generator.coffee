@@ -5,6 +5,7 @@ proc    = require 'child_process'
 spawn   = proc.spawn
 async   = require 'async'
 helpers = require './helpers'
+_       = require 'lodash'
 
 
 module.exports = (opts, isTesting) ->

@@ -37,7 +37,8 @@ describe 'generator =>', ->
       gen(cmd, true)()
 
     afterEach (done) ->
-      rm 'files/targets', 't1', done
+#      rm 'files/targets', 't1', done
+      done()
 
     it 'should have generated base the files and directories', ->
       exists(target,
@@ -46,7 +47,7 @@ describe 'generator =>', ->
         'tests'
         '.gitignore'
         '.travis.yml'
-        'index.js'
+        cmd.entryPoint
         'license'
         'package.json'
         'readme.md'

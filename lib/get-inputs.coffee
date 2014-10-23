@@ -1,8 +1,8 @@
-require('./globals')
 qu    = require 'inquirer'
 path  = require 'path'
 gen   = require './generator'
 cls   = require 'cli-color'
+_     = require 'lodash'
 
 
 ###
