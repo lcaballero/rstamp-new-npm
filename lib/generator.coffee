@@ -46,11 +46,15 @@ module.exports = (opts, isTesting) ->
         .translate('license', 'license')
         .translate('travis.yml', '.travis.yml')
         .process('readme.md')
-        .mkdirs('src', 'tests', 'files')
+        .mkdirs(
+          'src',
+          'tests/src',
+          'tests/lib',
+          'files')
         .translate('index.js.ftl', opts.entryPoint)
         .translate('src/FirstClass.coffee.ftl', "src/#{g.getModel().symbol}.coffee")
-        .translate('tests/FirstTest.coffee.ftl', "tests/#{g.getModel().symbol}Tests.coffee")
-        .copy('tests/globals.coffee')
+        .translate('tests/src/FirstTest.coffee.ftl', "tests/src/#{g.getModel().symbol}Tests.coffee")
+        .copy('tests/lib/globals.coffee')
         .run(
           commands :
             if isTesting then []

@@ -37,8 +37,8 @@ describe 'generator =>', ->
       gen(cmd, true)()
 
     afterEach (done) ->
-#      rm 'files/targets', 't1', done
-      done()
+      rm 'files/targets', 't1', done
+#      done()
 
     it 'should have generated base the files and directories', ->
       exists(target,
@@ -52,6 +52,9 @@ describe 'generator =>', ->
         'package.json'
         'readme.md'
       )
+
+    it 'should have generated tests/lib/globals.coffee', ->
+      exists(target, 'tests/lib/globals.coffee')
 
     it 'should create all dirs/ and files into the target dir/', ->
       base = target

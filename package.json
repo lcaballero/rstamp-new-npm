@@ -1,8 +1,7 @@
 {
   "name": "rstamp-new-npm",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "For use via rstamp-cli.  It generates a new npm project, one that suits my tasts, and has a lot of libraries that I typically use.  The basic structure looks like so:",
-  "main": "index.js",
   "scripts": {
     "test": "mocha --reporter list --compilers coffee:coffee-script/register tests"
   },

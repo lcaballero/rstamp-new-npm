@@ -55,7 +55,7 @@ questions = (conf) ->
       name    : "testCommand"
       type    : "input"
       message : "The test command for the package?"
-      default : "mocha --reporter list --compilers coffee:coffee-script/register tests"
+      default : "mocha --require tests/lib/globals.coffee --reporter list --compilers coffee:coffee-script/register tests/src"
     }
     {
       name    : "repo"
@@ -146,7 +146,6 @@ module.exports = (rstampConf) ->
     showValues(answers)
 
     qu.prompt(approve(answers), (confirmed) ->
-
       if confirmed.approve
         gen(answers)()
       else
